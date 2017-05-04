@@ -9,7 +9,9 @@ java -jar converter.java
 
 ### Download
 
-https://github.com/brunorozendo/converter/releases/download/1.0/converter.jar
+
+converter.jar](https://github.com/brunorozendo/converter/releases/download/1.0/converter.jar) .
+
 
 
 The input file (txt) must have a list of files with the full path.
