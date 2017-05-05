@@ -2,6 +2,7 @@
 
 ### Usage
 
+Require `Java 1.8`
 
 ```bash
 java -jar converter.java
@@ -20,12 +21,8 @@ Ex:
 
 ```
 /path/of/file/File.java
-/path/of/file/File1.java
-/path/of/file/File2.java
-/path/of/file/File3.java
-/path/of/file/File4.java
-/path/of/file/File5.java
-/path/of/file/File6.java
-/path/of/file/File7.java
-/path/of/file/File8.java
+/path/of/file/File1.html
+/path/of/file/File2.xml
+/path/of/file/File3.txt
+/path/of/file/File4.c
 ```
