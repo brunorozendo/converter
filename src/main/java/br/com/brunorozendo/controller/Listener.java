@@ -62,7 +62,7 @@ public class Listener implements EventHandler<ActionEvent> {
                 popupStage.showAndWait();
                 return;
             }
-            File file = fileChooserDestiny.showOpenDialog(this.pai.getStage());
+            File file = fileChooserDestiny.showSaveDialog(this.pai.getStage());
             if (file != null) {
                 this.listFiles.forEach(item -> item.setDestiny(file.toString()+item.getOrigin().replace("./", "")));
             }
