@@ -23,22 +23,37 @@ public class Converter extends Task<Boolean> {
 
 				String origin = arquivo.replace("./", "");
 
+
 				String destiny = item.getDestiny();
 
 				File fileOrigin = new File(origin);
 
 				try {
-					String[] split = destiny.split("/");
+					String[] split = {};
+					if(OsValidador.isWindows()){
+						split = destiny.split("\\\\");
+					}else{
+						split = destiny.split(System.getProperty("file.separator"));
+					}
+
 					split[split.length - 1] = "";
 					String completeSentance = "";
+					int a = 0;
+					int size = split.length;
 					for (String s : split) {
-						completeSentance += s + "/";
+						a++;
+						if (a != size){
+							completeSentance += s + System.getProperty("file.separator");
+						}else{
+							completeSentance += s;
+						}
+
 					}
 					new File(completeSentance).mkdirs();
 				}
-				catch (PatternSyntaxException ex) {}
-				catch (IllegalArgumentException ex) {}
-				catch (IndexOutOfBoundsException ex) {}
+				catch (PatternSyntaxException ex) {ex.printStackTrace();}
+				catch (IllegalArgumentException ex) {ex.printStackTrace();}
+				catch (IndexOutOfBoundsException ex) {ex.printStackTrace();}
 
 				inISO = new BufferedReader(new InputStreamReader(new FileInputStream(fileOrigin), Encode.ISO_8859_1));
 
@@ -48,7 +63,7 @@ public class Converter extends Task<Boolean> {
 				int linha = 0;
 				while ((strISO = inISO.readLine()) != null) {
 					if(linha > 0){
-						stringdata += "\n";
+						stringdata += System.getProperty("line.separator");
 					}
 
 					byte[] bytesISO = strISO.getBytes(Encode.ISO_8859_1);
@@ -95,7 +110,7 @@ public class Converter extends Task<Boolean> {
 				try {
 					myWriter.write(stringdata);
 				} catch (Exception e) {
-					e.getCause();
+					e.printStackTrace();
 				}finally {
 					myWriter.close();
 				}

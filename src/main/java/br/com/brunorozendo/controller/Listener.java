@@ -64,7 +64,15 @@ public class Listener implements EventHandler<ActionEvent> {
             }
             File file = fileChooserDestiny.showSaveDialog(this.pai.getStage());
             if (file != null) {
-                this.listFiles.forEach(item -> item.setDestiny(file.toString()+item.getOrigin().replace("./", "")));
+                this.listFiles.forEach(item -> {
+                    String d = file.toString();
+                    if(OsValidador.isWindows()){
+                        d = d+item.getOrigin().replaceAll("^[A-Z]*?:", "");
+                    }else{
+                        d = d+"/"+item.getOrigin().replace("./", "");
+                    }
+                    item.setDestiny(d);
+                });
             }
         }
 
