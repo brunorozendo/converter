@@ -10,6 +10,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 /**
@@ -22,6 +23,8 @@ public class Layout extends Application {
     private Listener listener;
     private Label labelStatus;
     private ProgressBar statusbar;
+
+    private Button buttonInputList,buttonInputDestiny,buttonConverter,buttonClear;
 
     public void build(String ... args){
         launch(args);
@@ -38,7 +41,7 @@ public class Layout extends Application {
     private void setWindows(){
         this.stage.setTitle("Converter  ISO-8859-1 to UTF-8 ");
         this.stage.setWidth(450);
-        this.stage.setHeight(250);
+        this.stage.setHeight(245);
         this.stage.setScene(this.scene);
         this.stage.setResizable(false);
         this.stage.show();
@@ -61,9 +64,9 @@ public class Layout extends Application {
 
     private VBox buildTop(){
         Label labelInputList = this.setLabelInputList();
-        Button buttonInputList = this.setButtonInputList();
+        buttonInputList = this.setButtonInputList();
         Label labelInputDestiny = this.setLabelInputDestiny();
-        Button buttonInputDestiny = this.setButtonInputDestiny();
+        buttonInputDestiny = this.setButtonInputDestiny();
 
         final GridPane inputGridPane = new GridPane();
         inputGridPane.setHgap(10);
@@ -95,8 +98,8 @@ public class Layout extends Application {
 
 
     private VBox buildBotton(){
-        Button buttonConverter = this.setButtonConverter();
-        Button buttonClear = this.setButtonClear();
+        buttonConverter = this.setButtonConverter();
+        buttonClear = this.setButtonClear();
 
 
         final GridPane inputGridPane = new GridPane();
@@ -121,8 +124,8 @@ public class Layout extends Application {
     }
 
     private Button setButtonInputList(){
-        final Button openButton = new Button("Lista de arquivos (.txt)");
-        openButton.setId("inputList");
+        Button openButton = new Button("Lista de arquivos (.txt)");
+        openButton.setId("inputListaArquivos");
         openButton.setOnAction(this.listener);
         return openButton;
     }
@@ -134,14 +137,14 @@ public class Layout extends Application {
     }
 
     private Button setButtonInputDestiny(){
-        final Button buttonDesntino = new Button("pasta de destino");
-        buttonDesntino.setId("inputDestiny");
+        final Button buttonDesntino = new Button("Pasta de Destino");
+        buttonDesntino.setId("inputDestino");
         buttonDesntino.setOnAction(this.listener);
         return buttonDesntino;
     }
 
     private Button setButtonConverter(){
-        final Button buttonConverter = new Button("converter");
+        final Button buttonConverter = new Button("Converter");
         buttonConverter.setId("inputConverter");
         buttonConverter.setOnAction(this.listener);
         return buttonConverter;
@@ -149,7 +152,7 @@ public class Layout extends Application {
 
     private Button setButtonClear(){
         final Button buttonConverter = new Button("Limpar");
-        buttonConverter.setId("inputClear");
+        buttonConverter.setId("inputLimpar");
         buttonConverter.setOnAction(this.listener);
         return buttonConverter;
     }
@@ -191,6 +194,21 @@ public class Layout extends Application {
 
     public ProgressBar getStatus(){
         return this.statusbar;
+    }
+
+
+    public void disableButtons(){
+        buttonInputList.setDisable(true);
+        buttonInputDestiny.setDisable(true);
+        buttonConverter.setDisable(true);
+        buttonClear.setDisable(true);
+    }
+
+    public void enableButtons(){
+        buttonInputList.setDisable(false);
+        buttonInputDestiny.setDisable(false);
+        buttonConverter.setDisable(false);
+        buttonClear.setDisable(false);
     }
 
 }

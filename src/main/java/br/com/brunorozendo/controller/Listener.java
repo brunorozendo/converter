@@ -2,6 +2,7 @@ package br.com.brunorozendo.controller;
 
 import br.com.brunorozendo.model.Item;
 import br.com.brunorozendo.view.Layout;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -21,101 +22,130 @@ import java.util.ArrayList;
 
 public class Listener implements EventHandler<ActionEvent> {
 
-    private Layout pai;
-    private ArrayList<Item> listFiles;
+    private Layout layout;
+    private ArrayList<Item> listaArquivos;
+    private boolean destino = false;
 
-    public Listener(Layout pai){
-        this.pai = pai;
+    public Listener(Layout layout){
+        this.layout = layout;
     }
 
 
     @Override
     public void handle(ActionEvent event) {
-
         String value = null;
         if(event.getSource() instanceof Button){
             value = ((Button)event.getSource()).getId();
-
         }
-
-        if("inputList".equals(value)){
-            final FileChooser fileChooser = new FileChooser();
-
-            File file = fileChooser.showOpenDialog(pai.getStage());
-            if (file != null) {
-                setListFiles(file);
-                pai.setLabelStatus("0/"+this.listFiles.size());
-            }
+        if("inputListaArquivos".equals(value)){
+            inputLista();
         }
-
-
-
-        if("inputDestiny".equals(value)){
-            final FileChooser fileChooserDestiny = new FileChooser();
-            if(this.listFiles == null ){
-                FlowPane popupFlowpane = new FlowPane();
-                popupFlowpane.getChildren().addAll(new Text(("carregue primeiro a lista de arquivos.")));
-                Scene popupScene = new Scene(popupFlowpane, 400, 100);
-                Stage popupStage = new Stage();
-                popupStage.initModality(Modality.APPLICATION_MODAL);
-                popupStage.setScene(popupScene);
-                popupStage.showAndWait();
+        if("inputDestino".equals(value)){
+            if(this.listaArquivos == null ){
+                popUpLista();
                 return;
             }
-            File file = fileChooserDestiny.showSaveDialog(this.pai.getStage());
-            if (file != null) {
-                this.listFiles.forEach(item -> {
-                    String d = file.toString();
-                    if(OsValidador.isWindows()){
-                        d = d+item.getOrigin().replaceAll("^[A-Z]*?:", "");
-                    }else{
-                        d = d+"/"+item.getOrigin().replace("./", "");
-                    }
-                    item.setDestiny(d);
-                });
-            }
+            inputDestino();
         }
-
-
         if("inputConverter".equals(value)){
-            int total = listFiles.size();
-            Converter converter = new Converter();
-            pai.getStatus().progressProperty().unbind();
-            pai.getStatus().progressProperty().bind(converter.progressProperty());
-            //pai.getLabelStatus().textProperty().unbind();
-            //pai.getLabelStatus().textProperty().bind(converter.messageProperty());
-            int i = 0;
-            for (Item item : listFiles){
-                ++i;
-                converter.setTotal(total);
-                converter.setItem(item, i);
-                try {
-                    converter.call();
-                    pai.setLabelStatus(i+"/"+total);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            if(this.listaArquivos == null ){
+                popUpLista();
+                return;
             }
+            if(!this.destino){
+                popUpDestino();
+                return;
+            }
+            layout.disableButtons();
+            actionConverter();
         }
+        if("inputLimpar".equals(value)){
+            inputLimpar();
+        }
+    }
 
-        if("inputClear".equals(value)){
-            pai.getStatus().progressProperty().unbind();
-            pai.setStatus(0.0);
-            //pai.getLabelStatus().textProperty().unbind();
-            pai.setLabelStatus("");
+    private void inputLimpar() {
+        this.listaArquivos = null;
+        layout.getStatus().progressProperty().unbind();
+        layout.setStatus(0.0);
+        layout.getLabelStatus().textProperty().unbind();
+        layout.setLabelStatus("");
+    }
+
+    private void actionConverter() {
+        Converter converter = new Converter();
+        converter.setListaArquivos(this.listaArquivos);
+
+        converter.setOnSucceeded((WorkerStateEvent event2) -> {
+            layout.getLabelStatus().textProperty().unbind();
+            layout.setLabelStatus("Concluido");
+            layout.enableButtons();
+        });
+
+        layout.getStatus().progressProperty().unbind();
+        layout.getStatus().progressProperty().bind(converter.progressProperty());
+        layout.getLabelStatus().textProperty().unbind();
+        layout.getLabelStatus().textProperty().bind(converter.messageProperty());
+
+        Thread th = new Thread(converter);
+        th.start();
+    }
+
+    private void inputDestino() {
+        final FileChooser fileChooserDestiny = new FileChooser();
+        File file = fileChooserDestiny.showSaveDialog(this.layout.getStage());
+        if (file != null) {
+            this.listaArquivos.forEach(item -> {
+                String d = file.toString();
+                if(OsValidador.isWindows()){
+                    d = d+item.getOrigin().replaceAll("^[A-Z0-9]*?:", "");
+                }else{
+                    d = d+"/"+item.getOrigin().replace("./", "");
+                }
+                item.setDestiny(d);
+            });
+        }
+        this.destino = true;
+    }
+
+    private void popUpLista() {
+        this.popUp("carregue primeiro a lista de arquivos.");
+    }
+
+    private void popUpDestino() {
+        this.popUp("carregue a pasta de destino primeiro.");
+    }
+
+    private void popUp(String msg) {
+        FlowPane popupFlowpane = new FlowPane();
+        popupFlowpane.getChildren().addAll(new Text((msg)));
+        Scene popupScene = new Scene(popupFlowpane, 400, 100);
+        Stage popupStage = new Stage();
+        popupStage.initModality(Modality.APPLICATION_MODAL);
+        popupStage.setScene(popupScene);
+        popupStage.showAndWait();
+    }
+
+    private void inputLista() {
+        final FileChooser fileChooser = new FileChooser();
+
+        File file = fileChooser.showOpenDialog(layout.getStage());
+        if (file != null) {
+            setlistaArquivos(file);
+            layout.setLabelStatus("0/"+this.listaArquivos.size());
         }
     }
 
 
-    public void setListFiles(File input) {
+    public void setlistaArquivos(File input) {
         String arquivo;
         BufferedReader listaBuffer = null;
-        this.listFiles = new ArrayList<Item>();
+        this.listaArquivos = new ArrayList<Item>();
         try {
             File lista = input;
             listaBuffer = new BufferedReader(new InputStreamReader(new FileInputStream(lista), Encode.ISO_8859_1));
             while ((arquivo = listaBuffer.readLine()) != null) {
-                this.listFiles.add(new Item(arquivo));
+                this.listaArquivos.add(new Item(arquivo));
             }
         } catch (Exception e) {
             e.printStackTrace();

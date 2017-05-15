@@ -5,29 +5,24 @@ import javafx.concurrent.Task;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.regex.PatternSyntaxException;
 
-public class Converter extends Task<Boolean> {
+public class Converter extends Task<Void> {
 
-	private Item item;
-	private int total, contador;
+	private int total;
+	ArrayList<Item> lista;
 	private boolean charByChar = false;
 
 
-	public Boolean converter(Item item, int i) {
-		Boolean status = Boolean.FALSE;
+	public void converter(Item item) {
 		BufferedReader inISO = null;
 
 		try {
 				String arquivo = item.getOrigin();
-
 				String origin = arquivo.replace("./", "");
-
-
 				String destiny = item.getDestiny();
-
 				File fileOrigin = new File(origin);
-
 				try {
 					String[] split = {};
 					if(OsValidador.isWindows()){
@@ -58,17 +53,16 @@ public class Converter extends Task<Boolean> {
 				inISO = new BufferedReader(new InputStreamReader(new FileInputStream(fileOrigin), Encode.ISO_8859_1));
 
 				String strISO;
-				String stringdata = null;
+				String stringData = null;
 
 				int linha = 0;
 				while ((strISO = inISO.readLine()) != null) {
 					if(linha > 0){
-						stringdata += System.getProperty("line.separator");
+						stringData += System.getProperty("line.separator");
 					}
 
 					byte[] bytesISO = strISO.getBytes(Encode.ISO_8859_1);
 					if(charByChar){
-						// caracter by caracter
 						for (int j = 0; j < bytesISO.length; j++) {
 
 							byte[] caracter = { bytesISO[j] };
@@ -80,14 +74,14 @@ public class Converter extends Task<Boolean> {
 
 							byte[] bytesU = stringCaracterUTF.getBytes(Encode.UTF_8);
 
-							if (stringdata == null) {
-								stringdata = new String(bytesU, Encode.UTF_8);
+							if (stringData == null) {
+								stringData = new String(bytesU, Encode.UTF_8);
 							} else {
-								stringdata += new String(bytesU, Encode.UTF_8);
+								stringData += new String(bytesU, Encode.UTF_8);
 							}
 						}
 					}else{
-						//line by line
+						//linha por linha
 						String stringCaracterISO = new String(bytesISO, Encode.ISO_8859_1);
 						String htmlCaracter = StringEscapeUtils.escapeHtml4(stringCaracterISO);
 						byte[] bytesCaracter = htmlCaracter.getBytes(Encode.ISO_8859_1);
@@ -96,27 +90,24 @@ public class Converter extends Task<Boolean> {
 
 						byte[] bytesU = stringCaracterUTF.getBytes(Encode.UTF_8);
 
-						if (stringdata == null) {
-							stringdata = new String(bytesU, Encode.UTF_8);
+						if (stringData == null) {
+							stringData = new String(bytesU, Encode.UTF_8);
 						} else {
-							stringdata += new String(bytesU, Encode.UTF_8);
+							stringData += new String(bytesU, Encode.UTF_8);
 						}
 					}
 
 
 					linha++;
 				}
-				Writer myWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(destiny), Encode.UTF_8));
+				Writer writerDestino = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(destiny), Encode.UTF_8));
 				try {
-					myWriter.write(stringdata);
+					writerDestino.write(stringData);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}finally {
-					myWriter.close();
+					writerDestino.close();
 				}
-				this.updateProgress(i, total);
-				this.updateMessage(item.getDestiny());
-				status = Boolean.TRUE;
 		} catch (UnsupportedEncodingException e) {
 			System.out.println(e.getMessage());
 		} catch (IOException e) {
@@ -130,20 +121,29 @@ public class Converter extends Task<Boolean> {
 				e.printStackTrace();
 			}
 		}
-		return status;
 	}
 
-	public void setItem(Item item, int i){
-		this.item = item;
-		this.contador = i;
-	}
+
 
 	@Override
-	protected Boolean call() throws Exception {
-		return this.converter(this.item, this.contador);
+	protected Void call() throws Exception {
+		int i = 0;
+		for (Item item : this.lista){
+			++i;
+			try {
+				this.converter(item);
+				this.updateProgress(i, total);
+				this.updateMessage(i+"/"+total);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
 	}
 
-	public void setTotal(int t){
-		this.total = t;
+	public void setListaArquivos(ArrayList<Item> lista ){
+		this.lista = lista;
+		this.total = this.lista.size();
 	}
+
 }
