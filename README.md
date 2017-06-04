@@ -11,7 +11,7 @@ java -jar converter.java
 ### Download
 
 
-[converter.jar](https://github.com/brunorozendo/converter/releases/download/1.2/converter.jar) .
+[converter.jar](https://github.com/brunorozendo/converter-ISO8859-1_to_UTF8/releases/download/1.3/converter.jar)
 
 
 
