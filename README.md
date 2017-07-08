@@ -1,4 +1,4 @@
-# A simple converter ISO-8859-1 to UTF-8
+# A simple converter any encode to UTF-8
 
 ### Usage
 
@@ -11,7 +11,7 @@ java -jar converter.java
 ### Download
 
 
-[converter.jar](https://github.com/brunorozendo/converter-ISO8859-1_to_UTF8/releases/download/1.3/converter.jar)
+[converter.jar](https://github.com/brunorozendo/converter-any_encode_to_UTF8/releases/download/1.4/converter.jar)
 
 
 

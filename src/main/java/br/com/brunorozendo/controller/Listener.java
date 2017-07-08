@@ -8,9 +8,12 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 import java.io.BufferedReader;
@@ -117,6 +120,10 @@ public class Listener implements EventHandler<ActionEvent> {
     }
 
     private void popUp(String msg) {
+        final Popup popup = new Popup(); popup.setX(300); popup.setY(200);
+        popup.getContent().addAll(new Circle(25, 25, 50, Color.AQUAMARINE));
+        popup.show(this.layout.getStage());
+
         FlowPane popupFlowpane = new FlowPane();
         popupFlowpane.getChildren().addAll(new Text((msg)));
         Scene popupScene = new Scene(popupFlowpane, 400, 100);
