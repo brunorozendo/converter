@@ -39,7 +39,7 @@ public class Layout extends Application {
     }
 
     private void setWindows(){
-        this.stage.setTitle("Converter  ISO-8859-1 to UTF-8 ");
+        this.stage.setTitle("Converter any encode to UTF-8 ");
         this.stage.setWidth(450);
         this.stage.setHeight(245);
         this.stage.setScene(this.scene);
