@@ -11,7 +11,7 @@ java -jar converter.java
 ### Download
 
 
-[converter.jar](https://github.com/brunorozendo/converter-any_encode_to_UTF8/releases/download/1.4/converter.jar)
+[converter.jar](https://github.com/brunorozendo/converter-any_encode_to_UTF8/releases/download/1.5/converter.jar)
 
 
 

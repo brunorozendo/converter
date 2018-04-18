@@ -12,6 +12,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
@@ -95,8 +96,8 @@ public class Listener implements EventHandler<ActionEvent> {
     }
 
     private void inputDestino() {
-        final FileChooser fileChooserDestiny = new FileChooser();
-        File file = fileChooserDestiny.showSaveDialog(this.layout.getStage());
+        final DirectoryChooser fileChooserDestiny = new DirectoryChooser();
+        File file = fileChooserDestiny.showDialog(this.layout.getStage());
         if (file != null) {
             this.listaArquivos.forEach(item -> {
                 String d = file.toString();
@@ -121,7 +122,7 @@ public class Listener implements EventHandler<ActionEvent> {
 
     private void popUp(String msg) {
         final Popup popup = new Popup(); popup.setX(300); popup.setY(200);
-        popup.getContent().addAll(new Circle(25, 25, 50, Color.AQUAMARINE));
+        //popup.getContent().addAll(new Circle(25, 25, 50, Color.AQUAMARINE));
         popup.show(this.layout.getStage());
 
         FlowPane popupFlowpane = new FlowPane();
